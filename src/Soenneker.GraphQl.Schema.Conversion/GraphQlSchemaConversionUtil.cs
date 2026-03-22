@@ -478,7 +478,7 @@ public sealed class GraphQlSchemaConversionUtil: IGraphQlSchemaConversionUtil
 
         string? reason = GetOptionalString(element, "deprecationReason");
 
-        if (string.IsNullOrWhiteSpace(reason) || reason == "No longer supported")
+        if (reason.IsNullOrWhiteSpace() || reason == "No longer supported")
         {
             sb.Append(" @deprecated");
             return;
@@ -517,7 +517,7 @@ public sealed class GraphQlSchemaConversionUtil: IGraphQlSchemaConversionUtil
 
     private static void AppendDescription(ref PooledStringBuilder sb, string? description, bool includeDescriptions, int indentLevel = 0)
     {
-        if (!includeDescriptions || string.IsNullOrWhiteSpace(description))
+        if (!includeDescriptions || description.IsNullOrWhiteSpace())
             return;
 
         string indent = new(' ', indentLevel * 2);
