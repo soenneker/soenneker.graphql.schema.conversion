@@ -1,20 +1,19 @@
 using Soenneker.GraphQl.Schema.Conversion.Abstract;
-using Soenneker.Tests.FixturedUnit;
-using Xunit;
+using Soenneker.Tests.HostedUnit;
 
 namespace Soenneker.GraphQl.Schema.Conversion.Tests;
 
-[Collection("Collection")]
-public sealed class GraphQlSchemaConversionUtilTests : FixturedUnitTest
+[ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
+public sealed class GraphQlSchemaConversionUtilTests : HostedUnitTest
 {
     private readonly IGraphQlSchemaConversionUtil _util;
 
-    public GraphQlSchemaConversionUtilTests(Fixture fixture, ITestOutputHelper output) : base(fixture, output)
+    public GraphQlSchemaConversionUtilTests(Host host) : base(host)
     {
         _util = Resolve<IGraphQlSchemaConversionUtil>(true);
     }
 
-    [Fact]
+    [Test]
     public void Default()
     {
 
