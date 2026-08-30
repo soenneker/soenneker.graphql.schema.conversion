@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Soenneker.GraphQl.Schema.Conversion.Abstract;
 using Soenneker.Tests.HostedUnit;
 
@@ -14,8 +15,43 @@ public sealed class GraphQlSchemaConversionUtilTests : HostedUnitTest
     }
 
     [Test]
-    public void Default()
+    public async Task Converts_one_of_input_object()
     {
+        const string introspectionJson = """
+                                         {
+                                           "data": {
+                                             "__schema": {
+                                               "queryType": { "name": "Query" },
+                                               "mutationType": null,
+                                               "subscriptionType": null,
+                                               "directives": [],
+                                               "types": [
+                                                 {
+                                                   "kind": "OBJECT",
+                                                   "name": "Query",
+                                                   "fields": []
+                                                 },
+                                                 {
+                                                   "kind": "INPUT_OBJECT",
+                                                   "name": "Choice",
+                                                   "isOneOf": true,
+                                                   "inputFields": [
+                                                     {
+                                                       "name": "id",
+                                                       "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
+                                                       "defaultValue": null
+                                                     }
+                                                   ]
+                                                 }
+                                               ]
+                                             }
+                                           }
+                                         }
+                                         """;
 
+        string result = _util.Convert(introspectionJson);
+
+        await Assert.That(result).Contains("input Choice @oneOf");
+        await Assert.That(result).Contains("id: ID");
     }
 }

@@ -8,8 +8,7 @@ using Soenneker.Extensions.String;
 
 namespace Soenneker.GraphQl.Schema.Conversion;
 
-/// <inheritdoc cref="IGraphQlSchemaConversionUtil"/>
-public sealed class GraphQlSchemaConversionUtil: IGraphQlSchemaConversionUtil
+public sealed class GraphQlSchemaConversionUtil : IGraphQlSchemaConversionUtil
 {
     public GraphQlSchemaConversionUtil()
     {
@@ -166,7 +165,7 @@ public sealed class GraphQlSchemaConversionUtil: IGraphQlSchemaConversionUtil
                 sb.Append(string.Join(" | ", locations.EnumerateArray().Select(static location => location.GetString()).Where(static value => !string.IsNullOrWhiteSpace(value))!));
             }
 
-            return sb.ToStringAndDispose();
+            return sb.ToString();
         }
         finally
         {
@@ -195,7 +194,7 @@ public sealed class GraphQlSchemaConversionUtil: IGraphQlSchemaConversionUtil
                 sb.Append(')');
             }
 
-            return sb.ToStringAndDispose();
+            return sb.ToString();
         }
         finally
         {
@@ -237,7 +236,7 @@ public sealed class GraphQlSchemaConversionUtil: IGraphQlSchemaConversionUtil
             }
 
             sb.Append('}');
-            return sb.ToStringAndDispose();
+            return sb.ToString();
         }
         finally
         {
@@ -279,7 +278,7 @@ public sealed class GraphQlSchemaConversionUtil: IGraphQlSchemaConversionUtil
             }
 
             sb.Append('}');
-            return sb.ToStringAndDispose();
+            return sb.ToString();
         }
         finally
         {
@@ -314,7 +313,7 @@ public sealed class GraphQlSchemaConversionUtil: IGraphQlSchemaConversionUtil
                 }
             }
 
-            return sb.ToStringAndDispose();
+            return sb.ToString();
         }
         finally
         {
@@ -349,7 +348,7 @@ public sealed class GraphQlSchemaConversionUtil: IGraphQlSchemaConversionUtil
             }
 
             sb.Append('}');
-            return sb.ToStringAndDispose();
+            return sb.ToString();
         }
         finally
         {
@@ -368,6 +367,10 @@ public sealed class GraphQlSchemaConversionUtil: IGraphQlSchemaConversionUtil
             string name = GetRequiredString(type, "name");
             sb.Append("input ");
             sb.Append(name);
+
+            if (GetOptionalBoolean(type, "isOneOf") == true)
+                sb.Append(" @oneOf");
+
             sb.AppendLine(" {");
 
             if (TryGetArray(type, "inputFields", out JsonElement inputFields))
@@ -382,7 +385,7 @@ public sealed class GraphQlSchemaConversionUtil: IGraphQlSchemaConversionUtil
             }
 
             sb.Append('}');
-            return sb.ToStringAndDispose();
+            return sb.ToString();
         }
         finally
         {
@@ -412,7 +415,7 @@ public sealed class GraphQlSchemaConversionUtil: IGraphQlSchemaConversionUtil
             sb.Append(type);
             AppendDeprecatedDirective(ref sb, field);
 
-            return sb.ToStringAndDispose();
+            return sb.ToString();
         }
         finally
         {
@@ -440,7 +443,7 @@ public sealed class GraphQlSchemaConversionUtil: IGraphQlSchemaConversionUtil
 
             AppendDeprecatedDirective(ref sb, inputValue);
 
-            return sb.ToStringAndDispose();
+            return sb.ToString();
         }
         finally
         {

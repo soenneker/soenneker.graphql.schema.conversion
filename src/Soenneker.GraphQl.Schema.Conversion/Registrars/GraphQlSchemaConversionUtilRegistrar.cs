@@ -5,12 +5,12 @@ using Soenneker.GraphQl.Schema.Conversion.Abstract;
 namespace Soenneker.GraphQl.Schema.Conversion.Registrars;
 
 /// <summary>
-/// A GraphQL schema conversion utility
+/// Registers the GraphQL introspection-to-SDL converter.
 /// </summary>
 public static class GraphQlSchemaConversionUtilRegistrar
 {
     /// <summary>
-    /// Adds <see cref="IGraphQlSchemaConversionUtil"/> as a singleton service. <para/>
+    /// Adds the stateless <see cref="IGraphQlSchemaConversionUtil"/> as a singleton service.
     /// </summary>
     /// <param name="services">Service collection that receives the registration.</param>
     /// <returns>The same service collection, so additional registrations can be chained.</returns>
@@ -22,7 +22,7 @@ public static class GraphQlSchemaConversionUtilRegistrar
     }
 
     /// <summary>
-    /// Adds <see cref="IGraphQlSchemaConversionUtil"/> as a scoped service. <para/>
+    /// Adds <see cref="IGraphQlSchemaConversionUtil"/> as a scoped service.
     /// </summary>
     /// <param name="services">Service collection that receives the registration.</param>
     /// <returns>The same service collection, so additional registrations can be chained.</returns>

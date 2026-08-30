@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Description>A GraphQL schema conversion utility</Description>
+        <Description>Converts GraphQL introspection responses to Schema Definition Language (SDL)</Description>
         <Version Condition="'$(BUILD_VERSION)' == ''">4.0.0</Version>
         <Version Condition="'$(BUILD_VERSION)' != ''">$(BUILD_VERSION)</Version>
         <AssemblyName>Soenneker.GraphQl.Schema.Conversion</AssemblyName>
