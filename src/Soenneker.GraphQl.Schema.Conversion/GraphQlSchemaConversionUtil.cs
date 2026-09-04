@@ -8,6 +8,7 @@ using Soenneker.Extensions.String;
 
 namespace Soenneker.GraphQl.Schema.Conversion;
 
+/// <inheritdoc cref="IGraphQlSchemaConversionUtil" />
 public sealed class GraphQlSchemaConversionUtil : IGraphQlSchemaConversionUtil
 {
     public GraphQlSchemaConversionUtil()
