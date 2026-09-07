@@ -153,7 +153,7 @@ public sealed class GraphQlSchemaConversionUtil : IGraphQlSchemaConversionUtil
             if (TryGetArray(directive, "args", out JsonElement args) && args.GetArrayLength() > 0)
             {
                 sb.Append('(');
-                sb.Append(JoinInputValues(args.EnumerateArray(), includeDescriptionsInline: false));
+                AppendInputValues(ref sb, args.EnumerateArray());
                 sb.Append(')');
             }
 
@@ -231,7 +231,7 @@ public sealed class GraphQlSchemaConversionUtil : IGraphQlSchemaConversionUtil
                 {
                     AppendDescription(ref sb, GetOptionalString(field, "description"), includeDescriptions, 1);
                     sb.Append("  ");
-                    sb.Append(BuildField(field));
+                    AppendField(ref sb, field);
                     sb.AppendLine();
                 }
             }
@@ -273,7 +273,7 @@ public sealed class GraphQlSchemaConversionUtil : IGraphQlSchemaConversionUtil
                 {
                     AppendDescription(ref sb, GetOptionalString(field, "description"), includeDescriptions, 1);
                     sb.Append("  ");
-                    sb.Append(BuildField(field));
+                    AppendField(ref sb, field);
                     sb.AppendLine();
                 }
             }
@@ -380,7 +380,7 @@ public sealed class GraphQlSchemaConversionUtil : IGraphQlSchemaConversionUtil
                 {
                     AppendDescription(ref sb, GetOptionalString(inputField, "description"), includeDescriptions, 1);
                     sb.Append("  ");
-                    sb.Append(BuildInputValue(inputField));
+                    AppendInputValue(ref sb, inputField);
                     sb.AppendLine();
                 }
             }
@@ -394,70 +394,50 @@ public sealed class GraphQlSchemaConversionUtil : IGraphQlSchemaConversionUtil
         }
     }
 
-    private static string BuildField(JsonElement field)
+    private static void AppendField(ref PooledStringBuilder sb, JsonElement field)
     {
         string name = GetRequiredString(field, "name");
         string type = FormatTypeReference(field.GetProperty("type"));
+        sb.Append(name);
 
-        var sb = new PooledStringBuilder();
-
-        try
+        if (TryGetArray(field, "args", out JsonElement args) && args.GetArrayLength() > 0)
         {
-            sb.Append(name);
-
-            if (TryGetArray(field, "args", out JsonElement args) && args.GetArrayLength() > 0)
-            {
-                sb.Append('(');
-                sb.Append(JoinInputValues(args.EnumerateArray(), includeDescriptionsInline: false));
-                sb.Append(')');
-            }
-
-            sb.Append(": ");
-            sb.Append(type);
-            AppendDeprecatedDirective(ref sb, field);
-
-            return sb.ToString();
+            sb.Append('(');
+            AppendInputValues(ref sb, args.EnumerateArray());
+            sb.Append(')');
         }
-        finally
-        {
-            sb.Dispose();
-        }
+
+        sb.Append(": ");
+        sb.Append(type);
+        AppendDeprecatedDirective(ref sb, field);
     }
 
-    private static string BuildInputValue(JsonElement inputValue)
+    private static void AppendInputValue(ref PooledStringBuilder sb, JsonElement inputValue)
     {
-        var sb = new PooledStringBuilder();
+        sb.Append(GetRequiredString(inputValue, "name"));
+        sb.Append(": ");
+        sb.Append(FormatTypeReference(inputValue.GetProperty("type")));
 
-        try
+        string? defaultValue = GetOptionalString(inputValue, "defaultValue");
+        if (!string.IsNullOrWhiteSpace(defaultValue))
         {
-            sb.Append(GetRequiredString(inputValue, "name"));
-            sb.Append(": ");
-            sb.Append(FormatTypeReference(inputValue.GetProperty("type")));
-
-            string? defaultValue = GetOptionalString(inputValue, "defaultValue");
-
-            if (!string.IsNullOrWhiteSpace(defaultValue))
-            {
-                sb.Append(" = ");
-                sb.Append(defaultValue);
-            }
-
-            AppendDeprecatedDirective(ref sb, inputValue);
-
-            return sb.ToString();
+            sb.Append(" = ");
+            sb.Append(defaultValue);
         }
-        finally
-        {
-            sb.Dispose();
-        }
+
+        AppendDeprecatedDirective(ref sb, inputValue);
     }
 
-    private static string JoinInputValues(IEnumerable<JsonElement> inputValues, bool includeDescriptionsInline)
+    private static void AppendInputValues(ref PooledStringBuilder sb, JsonElement.ArrayEnumerator inputValues)
     {
-        if (includeDescriptionsInline)
-            throw new NotSupportedException("Inline descriptions are not supported for SDL argument rendering.");
-
-        return string.Join(", ", inputValues.Select(BuildInputValue));
+        bool first = true;
+        foreach (JsonElement inputValue in inputValues)
+        {
+            if (!first)
+                sb.Append(", ");
+            first = false;
+            AppendInputValue(ref sb, inputValue);
+        }
     }
 
     private static string BuildImplementsClause(JsonElement type)
