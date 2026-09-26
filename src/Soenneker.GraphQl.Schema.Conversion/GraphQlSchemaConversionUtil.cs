@@ -522,7 +522,7 @@ public sealed class GraphQlSchemaConversionUtil : IGraphQlSchemaConversionUtil
 
     private static string EscapeBlockString(string value) => value.Replace("\"\"\"", "\\\"\"\"", StringComparison.Ordinal);
 
-    private static string ToGraphQlString(string value) => JsonSerializer.Serialize(value);
+    private static string ToGraphQlString(string value) => "\"" + JsonEncodedText.Encode(value).ToString() + "\"";
 
     private static bool ShouldSkipType(JsonElement type)
     {
