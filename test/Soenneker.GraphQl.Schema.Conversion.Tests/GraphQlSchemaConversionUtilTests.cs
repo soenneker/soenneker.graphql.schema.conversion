@@ -15,7 +15,7 @@ public sealed class GraphQlSchemaConversionUtilTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Converts_one_of_input_object()
+    public async ValueTask Converts_one_of_input_object()
     {
         const string introspectionJson = """
                                          {
