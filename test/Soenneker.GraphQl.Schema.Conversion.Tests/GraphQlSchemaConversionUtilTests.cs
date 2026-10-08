@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Soenneker.GraphQl.Schema.Conversion.Abstract;
 using Soenneker.Tests.HostedUnit;
+using System.Threading;
 
 namespace Soenneker.GraphQl.Schema.Conversion.Tests;
 
@@ -15,7 +16,7 @@ public sealed class GraphQlSchemaConversionUtilTests : HostedUnitTest
     }
 
     [Test]
-    public async ValueTask Converts_one_of_input_object()
+    public async ValueTask Converts_one_of_input_object(CancellationToken cancellationToken)
     {
         const string introspectionJson = """
                                          {
